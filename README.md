@@ -1,9 +1,10 @@
-# nixfiles
+# dotfiles 
 > my NixOS configuration as a flake.
 
 using:
 - niri 
 - fuzzel
 - stylix + kanso
-- neovim (with my custom config)
+- kickstart-nix.nvim (with custom config, located at `abhirath/nvim`)
 - alacritty 
+- wsl
