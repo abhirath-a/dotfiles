@@ -14,6 +14,7 @@
     "${inputs.nix-mineral}/nix-mineral.nix"
     inputs.sops-nix.nixosModules.sops
   ];
+  programs.nix-ld.enable = true;
   services.udisks2.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.graphics.enable = true;
