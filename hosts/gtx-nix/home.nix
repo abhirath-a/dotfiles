@@ -29,12 +29,12 @@
     ripgrep
     mpv
     unzip
-    opencode
     darktable
     xwayland-satellite
     sleek-todo
     sops
     age
+    pwvucontrol
   ];
   programs.fuzzel.enable = true;
   services.mako.enable = true;

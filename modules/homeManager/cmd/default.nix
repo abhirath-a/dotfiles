@@ -8,5 +8,6 @@
     ./git.nix
     ./tmux.nix
     ./yazi
+    ./opencode.nix
   ];
 }

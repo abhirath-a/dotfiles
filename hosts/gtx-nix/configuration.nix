@@ -11,9 +11,16 @@
     inputs.home-manager.nixosModules.home-manager
     inputs.nur.modules.nixos.default
     inputs.nur.legacyPackages."x86_64-linux".repos.iopq.modules.xraya
-    "${inputs.nix-mineral}/nix-mineral.nix"
     inputs.sops-nix.nixosModules.sops
+    inputs.nix-mineral.nixosModules.nix-mineral
   ];
+  nix-mineral.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
+  services.blueman.enable = true;
   programs.nix-ld.enable = true;
   services.udisks2.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -31,6 +38,13 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    wireplumber.enable = true;
+  };
+
+  services.pipewire.wireplumber.extraConfig = {
+    bluetooth-policy = {
+      "bluetooth.autoswitch-to-headset-profile" = true;
+    };
   };
   programs.niri.enable = true;
   home-manager = {

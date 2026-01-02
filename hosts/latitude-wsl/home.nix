@@ -16,7 +16,6 @@
     fd
     ripgrep
     unzip
-    opencode
   ];
 
   programs.home-manager.enable = true;
