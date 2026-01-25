@@ -38,7 +38,8 @@
   ];
   programs.fuzzel.enable = true;
   services.mako.enable = true;
-  programs.waybar.enable = true;
+  programs.rofi.enable = true;
+  # programs.waybar.enable = true;
 
   programs.home-manager.enable = true;
 }

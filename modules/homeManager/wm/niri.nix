@@ -5,7 +5,6 @@
       input.mod-key = "Super";
       animations.enable = false;
       spawn-at-startup = [
-        { argv = [ ''${pkgs.waybar}/bin/waybar'' ]; }
         {
           argv = [
             ''${pkgs.swaybg}/bin/swaybg''
@@ -17,17 +16,22 @@
       prefer-no-csd = true;
       layout = {
         gaps = 4;
-        border = {
+        border.enable = false;
+        focus-ring = {
           enable = true;
-          width = 2;
+          width=1.5;
         };
-        focus-ring.enable = false;
+        # border = {
+        #   enable = true;
+        #   width = 2;
+        # };
+        # focus-ring.enable = false;
         default-column-width.proportion = 0.5;
       };
       gestures.hot-corners.enable = false;
-
+      overview.workspace-shadow.enable = false;
       binds = {
-        "Mod+D".action = spawn "fuzzel";
+        "Mod+D".action.spawn = ["rofi" "-show" "drun"];
         "Mod+T".action = spawn "alacritty";
 
         "Mod+E".action = spawn "bemoji";
