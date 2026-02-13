@@ -6,5 +6,5 @@ using:
 - fuzzel
 - stylix + kanso
 - kickstart-nix.nvim (with custom config, located at `abhirath/nvim`)
-- alacritty 
+- foot 
 - wsl

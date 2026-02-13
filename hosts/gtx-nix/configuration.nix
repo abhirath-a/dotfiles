@@ -12,14 +12,14 @@
     inputs.nur.modules.nixos.default
     inputs.nur.legacyPackages."x86_64-linux".repos.iopq.modules.xraya
     inputs.sops-nix.nixosModules.sops
-    inputs.nix-mineral.nixosModules.nix-mineral
   ];
-  nix-mineral.enable = true;
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
-
+  virtualisation.docker = {
+    enable = true;
+  };
   services.blueman.enable = true;
   programs.nix-ld.enable = true;
   services.udisks2.enable = true;
@@ -84,6 +84,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     shell = pkgs.bash;
   };

@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./alacritty.nix
+    ./foot.nix
     ./anki.nix
     ./firefox.nix
     ./spotify.nix

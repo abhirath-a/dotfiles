@@ -21,18 +21,13 @@
           enable = true;
           width=1.5;
         };
-        # border = {
-        #   enable = true;
-        #   width = 2;
-        # };
-        # focus-ring.enable = false;
         default-column-width.proportion = 0.5;
       };
       gestures.hot-corners.enable = false;
       overview.workspace-shadow.enable = false;
       binds = {
-        "Mod+D".action.spawn = ["rofi" "-show" "drun"];
-        "Mod+T".action = spawn "alacritty";
+        "Mod+D".action.spawn = ["fuzzel"];
+        "Mod+T".action = spawn "foot";
 
         "Mod+E".action = spawn "bemoji";
 
