@@ -11,18 +11,19 @@
     inputs.home-manager.nixosModules.home-manager
     inputs.nur.modules.nixos.default
     inputs.nur.legacyPackages."x86_64-linux".repos.iopq.modules.xraya
-    inputs.sops-nix.nixosModules.sops
   ];
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
-  virtualisation.docker = {
+  programs.steam = {
     enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
   };
+  virtualisation.podman.enable = true;
   services.blueman.enable = true;
   programs.nix-ld.enable = true;
-  services.udisks2.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.graphics.enable = true;
   hardware.nvidia = {
@@ -30,7 +31,7 @@
     modesetting.enable = true;
     powerManagement.enable = false;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
   security.rtkit.enable = true;
   services.pipewire = {
@@ -40,12 +41,8 @@
     pulse.enable = true;
     wireplumber.enable = true;
   };
-
-  services.pipewire.wireplumber.extraConfig = {
-    bluetooth-policy = {
-      "bluetooth.autoswitch-to-headset-profile" = true;
-    };
-  };
+  services.pipewire.wireplumber.extraConfig.bluetooth-policy."bluetooth.autoswitch-to-headset-profile" =
+    true;
   programs.niri.enable = true;
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
@@ -53,7 +50,6 @@
     useUserPackages = true;
     users.abhi.imports = [
       ./home.nix
-      inputs.spicetify-nix.homeManagerModules.default
     ];
   };
   services.tailscale.enable = true;
@@ -61,7 +57,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "gtx-nix";
 
-  hardware.opentabletdriver.enable = true;
   networking.networkmanager.enable = true;
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -105,7 +100,9 @@
     "flakes"
     "ca-derivations"
   ];
-  environment.systemPackages = with pkgs; [ vim ];
+  environment.systemPackages = [
+    pkgs.vim
+  ];
 
   services.displayManager.ly.enable = true;
   services.displayManager.ly.settings.pam = true;

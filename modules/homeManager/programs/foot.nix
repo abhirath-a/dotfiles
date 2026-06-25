@@ -8,7 +8,7 @@
         font = "monospace:size=12";
         pad = "10x10";
       };
-      colors = {
+      colors-dark = {
         foreground  = "c5c9c7";
         background  = "090e13";
 

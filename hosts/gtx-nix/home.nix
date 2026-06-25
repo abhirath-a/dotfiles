@@ -20,11 +20,9 @@
     prismlauncher
     wl-clipboard
     bemoji
-    xournalpp
     adwaita-icon-theme
     xfce.thunar
     nvim-pkg
-    libreoffice-qt6-fresh
     qimgv
     fd
     ripgrep
@@ -32,9 +30,6 @@
     unzip
     darktable
     xwayland-satellite
-    sleek-todo
-    sops
-    age
     pwvucontrol
     xdg-desktop-portal-gnome
   ];

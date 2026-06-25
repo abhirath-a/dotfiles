@@ -8,7 +8,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "github:nix-community/stylix";
-    spicetify-nix.url = "github:Gerg-L/spicetify-nix";
     abhivim.url = "git+https://codeberg.org/abhirath/nvim";
     nur = {
       url = "github:nix-community/NUR";
@@ -18,16 +17,7 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    cachy-tweaks = {
-      url = "github:AniviaFlome/cachy-tweaks-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-mineral.url = "github:cynicsketch/nix-mineral/";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
   outputs =
     {

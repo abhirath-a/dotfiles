@@ -7,9 +7,9 @@
       spawn-at-startup = [
         {
           argv = [
-            ''${pkgs.swaybg}/bin/swaybg''
+            "${pkgs.swaybg}/bin/swaybg"
             "-i"
-            ''${../../wallpapers/beach-kanso.jpg}''
+            "${../../wallpapers/SAAM-1925.12.2_1.jpg}"
           ];
         }
       ];
@@ -19,14 +19,41 @@
         border.enable = false;
         focus-ring = {
           enable = true;
-          width=1.5;
+          width = 0.5;
+          active.color = config.lib.stylix.colors.base06;
         };
         default-column-width.proportion = 0.5;
+      };
+      outputs = {
+        "HDMI-A-3" = {
+          mode = {
+            width = 1920;
+            height = 1080;
+            refresh = 60.0;
+          };
+          position = {
+            x = 0;
+            y = 0;
+          };
+        };
+
+        "HDMI-A-1" = {
+          mode = {
+            height = 1920;
+            width = 1080;
+            refresh = 60.0;
+          };
+          position = {
+            x = 1920;
+            y = 0;
+          };
+          transform.rotation = 90;
+        };
       };
       gestures.hot-corners.enable = false;
       overview.workspace-shadow.enable = false;
       binds = {
-        "Mod+D".action.spawn = ["fuzzel"];
+        "Mod+D".action.spawn = [ "fuzzel" ];
         "Mod+T".action = spawn "foot";
 
         "Mod+E".action = spawn "bemoji";
@@ -95,6 +122,8 @@
         "Mod+I".action = focus-workspace-up;
         "Mod+Ctrl+U".action = move-column-to-workspace-down;
         "Mod+Ctrl+I".action = move-column-to-workspace-up;
+        "Mod+V".action = toggle-window-floating;
+        "Mod+Shift+V".action = switch-focus-between-floating-and-tiling;
       };
       window-rules = [
         {

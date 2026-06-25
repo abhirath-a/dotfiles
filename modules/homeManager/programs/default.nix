@@ -4,10 +4,8 @@
   imports = [
     ./foot.nix
     ./anki.nix
-    ./firefox.nix
-    ./spotify.nix
-    ./udiskie.nix
+    ./librewolf.nix
     ./vesktop.nix
-    ./zathura.nix
+    ./sioyek.nix
   ];
 }
