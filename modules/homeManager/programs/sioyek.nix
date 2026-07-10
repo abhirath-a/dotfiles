@@ -1,18 +1,7 @@
-{ pkgs, ... }:
+{ ... }:
 {
   stylix.targets.sioyek.enable = false;
   programs.sioyek = {
-
-    package = pkgs.symlinkJoin {
-      name = "sioyek-xcb";
-      paths = [ pkgs.sioyek ];
-      buildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/sioyek \
-          --set QT_QPA_PLATFORM xcb
-      '';
-    };
-
     enable = true;
     bindings = {
       screen_down = "<C-d>";
@@ -26,7 +15,6 @@
       toggle_dark_mode = "i";
       toggle_custom_color = "c";
       reload_config = "r";
-      # helper_window
 
       fit_to_page_width = "s";
     };

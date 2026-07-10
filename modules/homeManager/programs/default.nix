@@ -4,7 +4,7 @@
   imports = [
     ./foot.nix
     ./anki.nix
-    ./librewolf.nix
+    ./zen.nix
     ./vesktop.nix
     ./sioyek.nix
   ];

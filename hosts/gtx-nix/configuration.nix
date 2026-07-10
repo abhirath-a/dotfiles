@@ -8,10 +8,12 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/nixos/stylix.nix
+    ../../modules/nixos/dnsmasq.nix
     inputs.home-manager.nixosModules.home-manager
     inputs.nur.modules.nixos.default
     inputs.nur.legacyPackages."x86_64-linux".repos.iopq.modules.xraya
   ];
+  hardware.uinput.enable = true;
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
@@ -50,6 +52,7 @@
     useUserPackages = true;
     users.abhi.imports = [
       ./home.nix
+      inputs.zen-browser.homeModules.beta
     ];
   };
   services.tailscale.enable = true;
@@ -80,6 +83,7 @@
       "networkmanager"
       "wheel"
       "docker"
+      "uinput"
     ];
     shell = pkgs.bash;
   };
@@ -101,8 +105,26 @@
     "ca-derivations"
   ];
   environment.systemPackages = [
-    pkgs.vim
+    inputs.zennotes.packages.${pkgs.system}.zennotes-desktop
+    pkgs.kanata
   ];
+
+  services.kanata = {
+    enable = true;
+    keyboards.input.config = ''
+      (defsrc
+        caps
+      )
+
+      (defalias
+        escctrl (tap-hold 500 500 esc lctl)
+      )
+
+      (deflayer base
+        @escctrl
+      )
+    '';
+  };
 
   services.displayManager.ly.enable = true;
   services.displayManager.ly.settings.pam = true;

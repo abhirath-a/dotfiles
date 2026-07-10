@@ -10,6 +10,8 @@
             "${pkgs.swaybg}/bin/swaybg"
             "-i"
             "${../../wallpapers/SAAM-1925.12.2_1.jpg}"
+            "-m"
+            "fill"
           ];
         }
       ];
@@ -23,6 +25,10 @@
           active.color = config.lib.stylix.colors.base06;
         };
         default-column-width.proportion = 0.5;
+      };
+      cursor = {
+        theme = "phinger-cursors-dark";
+        size = 24;
       };
       outputs = {
         "HDMI-A-3" = {
@@ -61,12 +67,12 @@
         "Mod+Q".action = close-window;
         "Mod+Shift+Q".action = quit;
 
-        "Mod+H".action = focus-column-left;
-        "Mod+J".action = focus-window-down;
-        "Mod+K".action = focus-window-up;
-        "Mod+L".action = focus-column-right;
-        "Mod+Shift+h".action = move-column-left;
-        "Mod+Shift+l".action = move-column-right;
+        "Mod+H".action = focus-column-or-monitor-left;
+        "Mod+J".action = focus-window-or-workspace-down;
+        "Mod+K".action = focus-window-or-workspace-up;
+        "Mod+L".action = focus-column-or-monitor-right;
+        "Mod+Shift+h".action = move-column-left-or-to-monitor-left;
+        "Mod+Shift+l".action = move-column-right-or-to-monitor-right;
         "Mod+Shift+j".action = move-window-down;
         "Mod+Shift+k".action = move-window-up;
         "Mod+Minus".action = set-column-width "-10%";
@@ -126,6 +132,11 @@
         "Mod+Shift+V".action = switch-focus-between-floating-and-tiling;
       };
       window-rules = [
+        {
+          matches = [ { app-id = "sioyek"; } ];
+          open-on-output = "HDMI-A-1";
+          default-column-width.proportion = 1.0;
+        }
         {
           geometry-corner-radius = {
             bottom-left = 0.0;

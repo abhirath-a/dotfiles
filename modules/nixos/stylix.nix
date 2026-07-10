@@ -27,7 +27,7 @@
     };
     cursor.package = pkgs.phinger-cursors;
     cursor.name = "phinger-cursors-dark";
-    cursor.size = 20;
+    cursor.size = 24;
     fonts = {
       monospace = {
         package = pkgs.nerd-fonts.jetbrains-mono;

@@ -6,7 +6,8 @@
     ./bash.nix
     ./fzf.nix
     ./git.nix
-    ./tmux.nix
-    ./opencode.nix
+    ./tmux
+    ./yazi
   ];
+  programs.opencode.enable = true;
 }

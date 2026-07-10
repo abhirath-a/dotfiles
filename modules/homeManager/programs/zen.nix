@@ -3,15 +3,16 @@
   ...
 }:
 {
-  programs.firefox = {
+  programs.zen-browser = {
     enable = true;
+    setAsDefaultBrowser = true;
     policies = {
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
     };
     profiles.default = {
       id = 0;
-      name = "default";
+      name = "abhi";
       isDefault = true;
       extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
         ublock-origin
@@ -35,6 +36,5 @@
       };
     };
   };
-  stylix.targets.firefox.profileNames = [ "default" ];
-  stylix.targets.firefox.colorTheme.enable = true;
+  stylix.targets.zen-browser.enable = false;
 }
