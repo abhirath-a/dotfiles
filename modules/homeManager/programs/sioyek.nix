@@ -1,4 +1,3 @@
-{ ... }:
 {
   stylix.targets.sioyek.enable = false;
   programs.sioyek = {

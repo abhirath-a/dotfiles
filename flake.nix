@@ -25,7 +25,7 @@
         home-manager.follows = "home-manager";
       };
     };
-    zennotes.url = "github:ZenNotes/zennotes";
+    handy.url = "github:cjpais/Handy";
   };
   outputs =
     {

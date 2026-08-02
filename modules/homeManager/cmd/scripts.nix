@@ -18,75 +18,105 @@
       exec ${pkgs.xdg-utils}/bin/xdg-open "$url"
     '')
     (pkgs.writeShellScriptBin "pdf" ''
-      set -euo pipefail
+         set -euo pipefail
 
       FD="${pkgs.fd}/bin/fd"
       FZF="${pkgs.fzf}/bin/fzf"
       SORT="${pkgs.coreutils}/bin/sort"
       SIOYEK="${pkgs.sioyek}/bin/sioyek"
-      BASH="${pkgs.bash}/bin/bash"
+      TMUX="${pkgs.tmux}/bin/tmux"
+      REALPATH="${pkgs.coreutils}/bin/realpath"
+      BASENAME="${pkgs.coreutils}/bin/basename"
 
       DIRS=(
         "$HOME/documents"
       )
 
-      ensure_runner_session() {
-        local session="$1"
-
-        if ${pkgs.tmux}/bin/tmux has-session -t "$session" 2>/dev/null; then
-          return
-        fi
-
-        ${pkgs.tmux}/bin/tmux new-session \
-          -d \
-          -s "$session" \
-          -n home \
-          -c "$HOME" \
-          "$BASH"
-      }
-
       list_documents() {
-        # REMOVED --base-directory so FD outputs absolute paths directly
-        "$FD" . "''${DIRS[@]}" \
-          --max-depth 2 \
-          -e pdf \
-          -e epub \
-          -e djvu \
-          |
-          "$SORT" -uf |
+        "$FD" \
+          --absolute-path \
+          --type f \
+          --max-depth 8 \
+          \( -e pdf -o -e epub -o -e djvu \) \
+          "''${DIRS[@]}" 2>/dev/null |
+          "$SORT" -u |
           while IFS= read -r path; do
-            # This correctly shows just the filename in FZF, but keeps the absolute path
-            printf '%s\t%s\n' "''${path##*/}" "$path"
+            name="$("$BASENAME" "$path")"
+            dir="$(dirname "$path" | sed "s#$HOME#~#")"
+
+            printf '%s\t%s\t%s\n' \
+              "$name" \
+              "$dir" \
+              "$path"
           done
       }
 
+      open_sioyek_tmux() {
+        local file="$1"
+        local session="pdf"
+
+        if ! "$TMUX" has-session -t "$session" 2>/dev/null; then
+          "$TMUX" new-session \
+            -d \
+            -s "$session" \
+            -n viewer \
+            -c "$HOME"
+        fi
+
+        "$TMUX" list-windows -t "$session" |
+          grep -q "viewer" || \
+          "$TMUX" new-window \
+            -d \
+            -t "$session" \
+            -n viewer \
+            -c "$HOME"
+
+        "$TMUX" send-keys \
+          -t "$session:viewer" \
+          "$SIOYEK $(printf '%q' "$file")" \
+          C-m
+
+        "$TMUX" display-message \
+          "Opened ''${file##*/}"
+      }
+
+      cleanup() {
+        unset FZF_DEFAULT_OPTS
+      }
+
+      trap cleanup EXIT INT TERM
+
       if [[ $# -gt 0 ]]; then
-        selected="$1"
+        selected="$("$REALPATH" "$1")"
       else
         selected="$(
-          list_documents |
+          mapfile -t entries < <(list_documents)
+
+          ((''${#entries[@]} > 0)) || exit 0
+
+          printf '%s\n' "''${entries[@]}" |
             "$FZF" \
               --delimiter=$'\t' \
-              --with-nth=1 |
-            cut -f2
+              --with-nth=1,2 \
+              --layout=reverse \
+              --height=50% \
+              --border \
+              --preview '
+                file=$(echo {} | cut -f3)
+                if command -v pdfinfo >/dev/null 2>&1; then
+                  pdfinfo "$file" 2>/dev/null | head -15
+                fi
+              ' |
+            cut -f3
         )"
 
         [[ -n "$selected" ]] || exit 0
       fi
 
-      if [[ -n "''${TMUX_PANE:-}" ]]; then
-        session="''${TMUX_RUNNER_SESSION:-background}"
+      selected="$("$REALPATH" "$selected")"
 
-        ensure_runner_session "$session"
-
-        ${pkgs.tmux}/bin/tmux new-window \
-          -d \
-          -t "$session:" \
-          -n pdf \
-          -c "$HOME" \
-          "$SIOYEK" "$selected"
-
-        ${pkgs.tmux}/bin/tmux display-message "Opened ''${selected##*/}"
+      if [[ -n "''${TMUX:-}" ]]; then
+        open_sioyek_tmux "$selected"
       else
         exec "$SIOYEK" "$selected"
       fi
@@ -94,231 +124,264 @@
 
     # vestibule-esque
     (pkgs.writeShellScriptBin "work-mode" ''
-            set -euo pipefail
+      set -euo pipefail
 
-            HOSTS_FILE="/var/lib/dnsmasq/work-mode-hosts"
-            BEGIN_MARKER="# BEGIN WORK MODE DNS BLOCK"
-            END_MARKER="# END WORK MODE DNS BLOCK"
-            IPV4_BLOCK="0.0.0.0"
-            IPV6_BLOCK="::1"
+      HOSTS_FILE="/var/lib/dnsmasq/work-mode-hosts"
+      BEGIN_MARKER="# BEGIN WORK MODE DNS BLOCK"
+      END_MARKER="# END WORK MODE DNS BLOCK"
+      IPV4_BLOCK="0.0.0.0"
+      IPV6_BLOCK="::1"
 
-            DOMAINS=(
-              youtube.com
-              www.youtube.com
-              m.youtube.com
-              music.youtube.com
-              tv.youtube.com
-              youtu.be
-              www.youtu.be
-              youtube-nocookie.com
-              www.youtube-nocookie.com
-              youtubei.googleapis.com
-              ytimg.com
-              www.ytimg.com
-              i.ytimg.com
-              s.ytimg.com
-              googlevideo.com
-              www.googlevideo.com
-              discord.com
-              www.discord.com
-              canary.discord.com
-              ptb.discord.com
-              discord.gg
-              www.discord.gg
-              gateway.discord.gg
-              discordapp.com
-              www.discordapp.com
-              cdn.discordapp.com
-              media.discordapp.net
-              substack.com
-              www.substack.com
-              app.substack.com
-              reader.substack.com
-              open.substack.com
-              substackcdn.com
-              substack-post-media.s3.amazonaws.com
-              www.reddit.com
-              reddit.com
-              redditmedia.com
-              redditstatic.com
-              redd.it
-              instagram.com
-              www.instagram.com
-              cdninstagram.com
-            )
+      DOMAINS=(
+        youtube.com
+        www.youtube.com
+        m.youtube.com
+        music.youtube.com
+        tv.youtube.com
+        youtu.be
+        www.youtu.be
+        youtube-nocookie.com
+        www.youtube-nocookie.com
+        youtubei.googleapis.com
+        ytimg.com
+        www.ytimg.com
+        i.ytimg.com
+        s.ytimg.com
+        googlevideo.com
+        www.googlevideo.com
+        discord.com
+        www.discord.com
+        canary.discord.com
+        ptb.discord.com
+        discord.gg
+        www.discord.gg
+        gateway.discord.gg
+        discordapp.com
+        www.discordapp.com
+        cdn.discordapp.com
+        media.discordapp.net
+        substack.com
+        www.substack.com
+        app.substack.com
+        reader.substack.com
+        open.substack.com
+        substackcdn.com
+        substack-post-media.s3.amazonaws.com
+        www.reddit.com
+        reddit.com
+        redditmedia.com
+        redditstatic.com
+        redd.it
+        instagram.com
+        www.instagram.com
+        cdninstagram.com
+      )
 
-            usage() {
-cat <<EOF
-Usage: $(basename "$0") [on|off|toggle|status|domains]
 
-Toggles a marked DNS-resolution block in $HOSTS_FILE via dnsmasq.
-Without an argument, defaults to: toggle.
-EOF
-            }
+      # usage() {
+      # cat <<EOF
+      # Usage: $(basename "$0") [on|off|toggle|status|domains]
+      #
+      # Toggles a marked DNS-resolution block in $HOSTS_FILE via dnsmasq.
+      # Without an argument, defaults to: toggle.
+      # EOF
+      # }
 
-            is_enabled() {
-              [[ -f "$HOSTS_FILE" ]] &&
-                ${pkgs.gnugrep}/bin/grep -Fxq "$BEGIN_MARKER" "$HOSTS_FILE"
-            }
+      is_enabled() {
+        [[ -f "$HOSTS_FILE" ]] &&
+          ${pkgs.ripgrep}/bin/rg -Fxq "$BEGIN_MARKER" "$HOSTS_FILE"
+      }
 
-            print_domains() {
-              printf '%s\n' "''${DOMAINS[@]}"
-            }
+      print_domains() {
+        printf '%s\n' "''${DOMAINS[@]}"
+      }
 
-            strip_work_mode_block() {
-              if [[ -f "$HOSTS_FILE" ]]; then
-                ${pkgs.gawk}/bin/awk \
-                  -v begin="$BEGIN_MARKER" \
-                  -v end="$END_MARKER" '
-                    $0 == begin { skipping = 1; next }
-                    $0 == end { skipping = 0; next }
-                    !skipping { print }
-                  ' "$HOSTS_FILE"
-              fi
-            }
+      strip_work_mode_block() {
+        if [[ -f "$HOSTS_FILE" ]]; then
+          ${pkgs.gawk}/bin/awk \
+            -v begin="$BEGIN_MARKER" \
+            -v end="$END_MARKER" '
+              $0 == begin { skipping = 1; next }
+              $0 == end { skipping = 0; next }
+              !skipping { print }
+            ' "$HOSTS_FILE"
+        fi
+      }
 
-            append_work_mode_block() {
-              printf '\n%s\n' "$BEGIN_MARKER"
-              printf '# Managed by work-mode; run `work-mode off` to remove.\n'
+      append_work_mode_block() {
+        printf '\n%s\n' "$BEGIN_MARKER"
+        printf '# Managed by work-mode; run `work-mode off` to remove.\n'
 
-              for domain in "''${DOMAINS[@]}"; do
-                printf '%s\t%s\n' "$IPV4_BLOCK" "$domain"
-                printf '%s\t%s\n' "$IPV6_BLOCK" "$domain"
-              done
+        for domain in "''${DOMAINS[@]}"; do
+          printf '%s\t%s\n' "$IPV4_BLOCK" "$domain"
+          printf '%s\t%s\n' "$IPV6_BLOCK" "$domain"
+        done
 
-              printf '%s\n' "$END_MARKER"
-            }
+        printf '%s\n' "$END_MARKER"
+      }
 
-            reload_dnsmasq() {
-              if ! sudo ${pkgs.systemd}/bin/systemctl kill -s HUP dnsmasq 2>/dev/null; then
-                sudo ${pkgs.systemd}/bin/systemctl reload dnsmasq
-              fi
-            }
+      reload_dnsmasq() {
+        if ! sudo ${pkgs.systemd}/bin/systemctl kill -s HUP dnsmasq 2>/dev/null; then
+          sudo ${pkgs.systemd}/bin/systemctl reload dnsmasq
+        fi
+      }
 
-            set_work_mode() {
-              local state="$1"
-              local tmp_file
+      set_work_mode() {
+        local state="$1"
+        local tmp_file
 
-              tmp_file="$(${pkgs.coreutils}/bin/mktemp /tmp/work-mode-hosts.XXXXXX)"
-              trap 'rm -f "$tmp_file"' EXIT
+        tmp_file="$(${pkgs.coreutils}/bin/mktemp /tmp/work-mode-hosts.XXXXXX)"
+        trap 'rm -f "$tmp_file"' EXIT
 
-              strip_work_mode_block > "$tmp_file"
+        strip_work_mode_block > "$tmp_file"
 
-              if [[ "$state" == "on" ]]; then
-                append_work_mode_block >> "$tmp_file"
-              fi
+        if [[ "$state" == "on" ]]; then
+          append_work_mode_block >> "$tmp_file"
+        fi
 
-              sudo cp "$tmp_file" "$HOSTS_FILE"
-              sudo chmod 0644 "$HOSTS_FILE"
+        sudo cp "$tmp_file" "$HOSTS_FILE"
+        sudo chmod 0644 "$HOSTS_FILE"
 
-              reload_dnsmasq
-            }
+        reload_dnsmasq
+      }
 
-            action="''${1:-toggle}"
+      action="''${1:-toggle}"
 
-            case "$action" in
-              on)
-                set_work_mode on
-                echo "Work mode is on. Blocked ''${#DOMAINS[@]} hostnames."
-                ;;
-              off)
-                set_work_mode off
-                echo "Work mode is off."
-                ;;
-              toggle)
-                if is_enabled; then
-                  set_work_mode off
-                  echo "Work mode is off."
-                else
-                  set_work_mode on
-                  echo "Work mode is on. Blocked ''${#DOMAINS[@]} hostnames."
-                fi
-                ;;
-              status)
-                if is_enabled; then
-                  echo "Work mode is on."
-                else
-                  echo "Work mode is off."
-                fi
-                ;;
-              domains)
-                print_domains
-                ;;
-              -h|--help|help)
-                usage
-                ;;
-              *)
-                usage >&2
-                exit 2
-                ;;
-            esac
+      case "$action" in
+        on)
+          set_work_mode on
+          echo "Work mode is on. Blocked ''${#DOMAINS[@]} hostnames."
+          ;;
+        off)
+          set_work_mode off
+          echo "Work mode is off."
+          ;;
+        toggle)
+          if is_enabled; then
+            set_work_mode off
+            echo "Work mode is off."
+          else
+            set_work_mode on
+            echo "Work mode is on. Blocked ''${#DOMAINS[@]} hostnames."
+          fi
+          ;;
+        status)
+          if is_enabled; then
+            echo "Work mode is on."
+          else
+            echo "Work mode is off."
+          fi
+          ;;
+        domains)
+          print_domains
+          ;;
+        -h|--help|help)
+          usage
+          ;;
+        *)
+          usage >&2
+          exit 2
+          ;;
+      esac
     '')
 
     (pkgs.writeShellScriptBin "ts" ''
       set -euo pipefail
 
-          DIRS=(
-            "$HOME"
-            "$HOME/documents"
-            "$HOME/documents/projects"
-            "$HOME/projects"
-            "$HOME/src"
-            "$HOME/.config/nixos"
-          )
+      FD="${pkgs.fd}/bin/fd"
+      FZF="${pkgs.fzf}/bin/fzf"
+      SORT="${pkgs.coreutils}/bin/sort"
+      REALPATH="${pkgs.coreutils}/bin/realpath"
+      SHA256SUM="${pkgs.coreutils}/bin/sha256sum"
+      TMUX="${pkgs.tmux}/bin/tmux"
 
-          if [[ $# -eq 1 ]]; then
-            selected="$1"
-          else
-            selected=$(
-              ${pkgs.fd}/bin/fd \
-                --type d \
-                --hidden \
-                --exclude .git \
-                --max-depth 2 \
-                . "''${DIRS[@]}" 2>/dev/null |
-              ${pkgs.coreutils}/bin/sort -u |
-              ${pkgs.fzf}/bin/fzf \
-                --height 40% \
-                --reverse \
-                --border
-            )
-          fi
+      DIRS=(
+        "$HOME"
+        "$HOME/documents"
+        "$HOME/documents/projects"
+        "$HOME/projects"
+        "$HOME/src"
+        "$HOME/.config/nixos"
+      )
 
-          [[ -z "''${selected:-}" ]] && exit 0
+      IGNORES=(
+        ".git"
+        "node_modules"
+        "target"
+        ".direnv"
+        "result"
+        ".cache"
+        ".venv"
+        "venv"
+      )
 
-          selected="$(${pkgs.coreutils}/bin/realpath "$selected")"
+      EDITOR_CMD="''${EDITOR:-nvim}"
 
-          session_name=$(
-            echo "$selected" |
-              sed "s#$HOME#~#" |
-              tr '/.' '__'
-          )
+      list_directories() {
+        "$FD" \
+          --type d \
+          --hidden \
+          --max-depth 3 \
+          "''${DIRS[@]}" \
+          "''${IGNORES[@]/#/--exclude=}" 2>/dev/null |
+          "$SORT" -u
+      }
 
-          if ! ${pkgs.tmux}/bin/tmux has-session -t "$session_name" 2>/dev/null; then
-            ${pkgs.tmux}/bin/tmux new-session \
-              -d \
-              -s "$session_name" \
-              -c "$selected" \
-              -n editor
+      session_name() {
+        local path="$1"
 
-            ${pkgs.tmux}/bin/tmux send-keys \
-              -t "$session_name:editor" \
-              "''${EDITOR:-nvim}" \
-              C-m
+        printf '%s' "$path" |
+          "$SHA256SUM" |
+          cut -c1-12
+      }
 
-            # Added -d here so the shell window doesn't steal focus from the editor
-            ${pkgs.tmux}/bin/tmux new-window \
-              -d \
-              -t "$session_name" \
-              -n shell \
-              -c "$selected"
-          fi
+      if [[ $# -eq 1 ]]; then
+        selected="$1"
+      else
+        mapfile -t entries < <(list_directories)
 
-          if [[ -n "''${TMUX:-}" ]]; then
-            ${pkgs.tmux}/bin/tmux switch-client -t "$session_name"
-          else
-            ${pkgs.tmux}/bin/tmux attach-session -t "$session_name"
-          fi
+        ((''${#entries[@]} > 0)) || exit 0
+
+        selected="$(
+          printf '%s\n' "''${entries[@]}" |
+            "$FZF" \
+              --height 40% \
+              --reverse \
+              --border \
+              --preview 'ls -la {}'
+        )"
+      fi
+
+      [[ -n "''${selected:-}" ]] || exit 0
+
+      selected="$("$REALPATH" "$selected")"
+
+      name="$(session_name "$selected")"
+
+      if ! "$TMUX" has-session -t "$name" 2>/dev/null; then
+        "$TMUX" new-session \
+          -d \
+          -s "$name" \
+          -c "$selected" \
+          -n editor
+
+        "$TMUX" send-keys \
+          -t "$name:editor" \
+          "$EDITOR_CMD" \
+          C-m
+
+        "$TMUX" new-window \
+          -d \
+          -t "$name" \
+          -n shell \
+          -c "$selected"
+      fi
+
+      if [[ -n "''${TMUX:-}" ]]; then
+        "$TMUX" switch-client -t "$name"
+      else
+        exec "$TMUX" attach-session -t "$name"
+      fi
     '')
 
     (pkgs.writeShellScriptBin "open-repo" ''

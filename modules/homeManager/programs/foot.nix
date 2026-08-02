@@ -5,7 +5,7 @@
     enable = true;
     settings = {
       main = {
-        font = "monospace:size=12";
+        font = "monospace:weight=medium:size=12";
         pad = "10x10";
       };
       colors-dark = {

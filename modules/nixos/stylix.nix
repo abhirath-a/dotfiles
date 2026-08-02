@@ -1,6 +1,8 @@
 {
-  pkgs,
   inputs,
+  config,
+  lib,
+  pkgs,
   ...
 }:
 {
@@ -25,22 +27,11 @@
       base0E = "#a292a3";
       base0F = "#938aa9";
     };
-    cursor.package = pkgs.phinger-cursors;
-    cursor.name = "phinger-cursors-dark";
-    cursor.size = 24;
-    fonts = {
-      monospace = {
-        package = pkgs.nerd-fonts.jetbrains-mono;
-        name = "JetBrainsMono Nerd Font";
-      };
-      sansSerif = {
-        package = pkgs.inter;
-        name = "Inter";
-      };
-      serif = {
-        package = pkgs.source-serif-pro;
-        name = "Source Serif Pro";
-      };
-    };
+    fonts = lib.flip lib.mapAttrs config.fonts.fontconfig.defaultFonts (
+      family: _: {
+        name = family;
+        package = pkgs.emptyDirectory;
+      }
+    );
   };
 }

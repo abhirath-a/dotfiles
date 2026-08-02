@@ -4,7 +4,7 @@
     enable = true;
     settings = {
       theme_background = false;
-      temp_scale = "fahrenheit";
+      temp_scale = "celsius";
       vim_keys = true;
     };
   };
