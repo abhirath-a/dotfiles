@@ -16,6 +16,8 @@
     fd
     ripgrep
     unzip
+    mosh
+    wakeonlan
   ];
 
   programs.home-manager.enable = true;

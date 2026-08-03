@@ -1,5 +1,4 @@
 {
-  stylix.targets.yazi.enable = false;
   programs.yazi = {
     enable = true;
     enableBashIntegration = true;

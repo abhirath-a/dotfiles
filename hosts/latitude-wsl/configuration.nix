@@ -12,7 +12,7 @@
 	};
 
  	networking.hostName = "latitude-wsl";
-	programs.bash.enable = true;
+
 	users.users.abhi = {
 		isNormalUser = true;
 		description = "Abhirath Agasanakoppa";
@@ -20,7 +20,7 @@
 			"networkmanager"
 				"wheel"
 		];
-		shell = pkgs.bash;
+		shell = pkgs.bashInteractive;
 	};
 
 	nixpkgs = {
@@ -29,6 +29,7 @@
 		];
 		config.allowUnfree = true;
 	};
+
 	nix.settings.experimental-features = [
 		"nix-command"
 			"flakes"
