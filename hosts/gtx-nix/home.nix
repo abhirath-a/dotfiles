@@ -47,4 +47,10 @@ in
   services.mako.enable = true;
 
   programs.home-manager.enable = true;
+  stylix.targets = {
+    fzf.colors.override = {
+      bg = "-1";
+    };
+    yazi.enable = false;
+  };
 }

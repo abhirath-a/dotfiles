@@ -9,12 +9,6 @@
   imports = [ inputs.stylix.nixosModules.stylix ];
   stylix = {
     enable = true;
-    targets = {
-      fzf.colors.override = {
-        bg = "-1";
-      };
-      yazi.enable = false;
-    };
     base16Scheme = {
       base00 = "#090e13";
       base01 = "#23252b";
