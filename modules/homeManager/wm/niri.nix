@@ -59,10 +59,11 @@
       gestures.hot-corners.enable = false;
       overview.workspace-shadow.enable = false;
       binds = {
-        "Mod+D".action.spawn = [ "fuzzel" ];
-        "Mod+T".action = spawn "foot";
+        "Mod+D".action.spawn = [ ''${pkgs.fuzzel}/bin/fuzzel'' ];
+        "Mod+T".action = spawn ''${pkgs.foot}/bin/foot'';
 
-        "Mod+E".action = spawn "bemoji";
+        "Mod+E".action = spawn "${pkgs.bemoji}/bin/bemoji";
+        "Mod+Space".action = spawn-sh "handy --toggle-transcription";
 
         "Mod+Q".action = close-window;
         "Mod+Shift+Q".action = quit;

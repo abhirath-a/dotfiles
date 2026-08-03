@@ -13,6 +13,7 @@
     inputs.home-manager.nixosModules.home-manager
     inputs.nur.modules.nixos.default
     inputs.nur.legacyPackages."x86_64-linux".repos.iopq.modules.xraya
+    inputs.niri-flake.nixosModules.niri
   ];
 
   hardware.uinput.enable = true;
@@ -54,16 +55,16 @@
   };
 
   programs.niri.enable = true;
-  xdg.portal = {
-    enable = true;
-
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk
-        xdg-desktop-portal-gnome
-    ];
-
-    configPackages = [ pkgs.niri ];
-  };
+  # xdg.portal = {
+  #   enable = true;
+  #
+  #   extraPortals = with pkgs; [
+  #     xdg-desktop-portal-gtk
+  #     xdg-desktop-portal-gnome
+  #   ];
+  #
+  #   configPackages = [ pkgs.niri ];
+  # };
   services.flatpak.enable = true;
 
   home-manager = {
@@ -106,6 +107,7 @@
   nixpkgs = {
     overlays = [
       inputs.abhivim.overlays.default
+      inputs.niri-flake.overlays.niri
     ];
     config.allowUnfree = true;
   };
@@ -131,8 +133,8 @@
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = false;
-      KbdInteractiveAuthentication = false;
+      PasswordAuthentication = true;
+      KbdInteractiveAuthentication = true;
       PermitRootLogin = "no";
     };
   };
@@ -153,7 +155,6 @@
       };
     };
   };
-
 
   networking.firewall.enable = true;
   system.stateVersion = "25.05";

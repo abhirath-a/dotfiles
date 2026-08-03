@@ -40,7 +40,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./hosts/gtx-nix/configuration.nix
-            inputs.niri-flake.nixosModules.niri
           ];
         };
         latitude-wsl = nixpkgs.lib.nixosSystem {

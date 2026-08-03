@@ -40,6 +40,7 @@ in
       pwvucontrol
       qt6Packages.qtwayland
       qt5.qtwayland
+      wtype
     ]
     ++ scripts.scripts;
 
