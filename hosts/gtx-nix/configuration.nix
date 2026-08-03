@@ -81,7 +81,12 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "gtx-nix";
-
+  networking = {
+    interfaces.enp0s31f6 = {
+      wakeOnLan.enable = true;
+    };
+    firewall.allowedUDPPorts = [ 9 ];
+  };
   networking.networkmanager.enable = true;
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -96,8 +101,15 @@
       "uinput"
     ];
     shell = pkgs.bashInteractive;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzsAiIp0B2m2W6gNwQgnDla3RNNCVLvnblP/ull3uNw arun@DESKTOP-NIL5T2N"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDZ1KTPya0xcIat9G+RkNiXvVMeVoR4Qr+4abhUrKIyI abhi@latitude-wsl"
+    ];
   };
-
+  programs.mosh = {
+    enable = true;
+    openFirewall = true;
+  };
   services.syncthing = {
     enable = true;
     user = "abhi";
@@ -133,8 +145,8 @@
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = true;
-      KbdInteractiveAuthentication = true;
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
       PermitRootLogin = "no";
     };
   };

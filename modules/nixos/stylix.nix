@@ -9,7 +9,7 @@
   imports = [ inputs.stylix.nixosModules.stylix ];
   stylix = {
     enable = true;
-    stylix.targets = {
+    targets = {
       fzf.colors.override = {
         bg = "-1";
       };
