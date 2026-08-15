@@ -19,6 +19,8 @@
     blink-cmp.url = "github:saghen/blink.cmp";
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);

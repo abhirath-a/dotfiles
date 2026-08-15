@@ -18,6 +18,7 @@
       self.nixosModules.theming
       self.nixosModules.anki
       self.nixosModules.btop
+      self.nixosModules.sops
     ];
   };
 }

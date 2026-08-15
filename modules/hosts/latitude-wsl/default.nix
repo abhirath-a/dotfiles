@@ -10,6 +10,7 @@
       self.nixosModules.hjem
       self.nixosModules.ssh
       self.nixosModules.btop
+      self.nixosModules.sops
     ];
   };
 }
