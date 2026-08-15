@@ -102,7 +102,6 @@
         show_battery_watts = true;
 
         log_level = "WARNING";
-        save_config_on_exit = true;
       };
     };
   };

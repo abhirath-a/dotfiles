@@ -17,6 +17,8 @@
     helium-flake.inputs.nixpkgs.follows = "nixpkgs";
     
     blink-cmp.url = "github:saghen/blink.cmp";
+
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
