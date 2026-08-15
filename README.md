@@ -4,7 +4,7 @@
 using:
 - niri 
 - fuzzel
-- stylix + kanso
-- kickstart-nix.nvim (with custom config, located at `abhirath/nvim`)
 - foot 
-- wsl
+- dendritic pattern
+- flake-parts
+- nix-wrapper-modules
