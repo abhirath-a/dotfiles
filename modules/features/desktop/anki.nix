@@ -147,6 +147,7 @@
                   [
                     "--fg"
                     "--bs-body-color"
+                    "--bs-form-control-color"
                   ]
                 ];
                 FG_DISABLED = [
@@ -324,7 +325,7 @@
               };
             };
           })
-          anki-connect
+          # anki-connect
           review-heatmap
           image-occlusion-enhanced
         ]

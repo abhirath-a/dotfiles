@@ -19,6 +19,8 @@
       self.nixosModules.anki
       self.nixosModules.btop
       self.nixosModules.sops
+      self.nixosModules.wireguard
+      self.nixosModules.spotify
     ];
   };
 }

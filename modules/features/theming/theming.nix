@@ -7,8 +7,8 @@
       environment.systemPackages = with pkgs; [
         adwaita-icon-theme
 
-        qt6Packages.qt6ct
-        libsForQt5.qt5ct
+        # qt6Packages.qt6ct
+        # libsForQt5.qt5ct
       ];
 
       hjem.users.abhi = {

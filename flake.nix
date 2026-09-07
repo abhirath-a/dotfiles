@@ -21,6 +21,8 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     sops-nix.url = "github:Mic92/sops-nix";
+    
+    spicetify-nix.url = "github:Gerg-L/spicetify-nix";
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);

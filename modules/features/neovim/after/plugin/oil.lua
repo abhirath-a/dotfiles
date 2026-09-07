@@ -13,7 +13,6 @@ require("oil").setup({
     ["h"] = "actions.parent",
     ["l"] = "actions.select",
   },
-  columns = {},
 })
 
 vim.keymap.set("n", "<leader>e", "<CMD>Oil<CR>")

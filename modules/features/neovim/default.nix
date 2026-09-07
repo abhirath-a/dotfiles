@@ -12,25 +12,6 @@
       environment.shellAliases = {
         vim = "nvim";
       };
-
-      environment.systemPackages = [
-        pkgs.fzf
-        pkgs.fd
-        pkgs.lua-language-server
-        pkgs.nil
-        pkgs.gopls
-        pkgs.ripgrep
-        pkgs.rust-analyzer
-        pkgs.marksman
-        pkgs.astro-language-server
-        pkgs.elixir-ls
-        pkgs.typescript-go
-        pkgs.ty
-        pkgs.tinymist
-        pkgs.typstyle
-        pkgs.svelte-language-server
-        pkgs.tailwindcss-language-server
-      ];
     };
   perSystem =
     { pkgs, system, ... }:
@@ -54,7 +35,6 @@
           fzf
           fd
           ripgrep
-
           lua-language-server
           nil
           gopls
@@ -64,9 +44,11 @@
           elixir-ls
           typescript-go
           ty
+          ruff
           tinymist
           svelte-language-server
           tailwindcss-language-server
+          jdt-language-server
         ];
 
         specs = with pkgs.vimPlugins; {

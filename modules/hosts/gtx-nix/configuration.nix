@@ -36,7 +36,6 @@
         nvidiaSettings = true;
         package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
       };
-
       security.rtkit.enable = true;
       services.pipewire = {
         enable = true;
@@ -51,7 +50,6 @@
 
       services.flatpak.enable = true;
 
-      services.tailscale.enable = true;
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
 
@@ -62,10 +60,9 @@
         };
         firewall = {
           enable = true;
-          trustedInterfaces = [ "tailscale0" ];
+          trustedInterfaces = [ "wg0" ];
           allowedUDPPorts = [
             9
-            config.services.tailscale.port
           ];
         };
         networkmanager.enable = true;
@@ -90,17 +87,20 @@
         "ca-derivations"
       ];
 
-      environment.systemPackages = [
-        pkgs.handy
-        pkgs.pwvucontrol
-        pkgs.vesktop
-        pkgs.prismlauncher
-        pkgs.thunar
-        pkgs.qimgv
-        pkgs.fd
-        pkgs.ripgrep
-        pkgs.mpv
-        pkgs.wtype 
+      environment.systemPackages = with pkgs; [
+        handy
+        pwvucontrol
+        vesktop
+        prismlauncher
+        thunar
+        qimgv
+        fd
+        ripgrep
+        mpv
+        wtype
+        waypipe
+        gimp
+        stirling-pdf-desktop
       ];
 
       programs.helium = {

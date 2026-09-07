@@ -8,7 +8,6 @@
       settings = {
         main = {
           dpi-aware = false;
-          icons-enabled = false;
         };
         border.radius = 0;
         colors = {

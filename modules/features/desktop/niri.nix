@@ -12,6 +12,7 @@
         pkgs.phinger-cursors
         pkgs.xwayland-satellite
         pkgs.wl-clipboard
+        pkgs.playerctl
       ];
       services.displayManager.ly = {
         enable = true;
@@ -159,10 +160,16 @@
             "XF86AudioLowerVolume".spawn-sh =
               "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-";
 
-            "XF86AudioMute".spawn-sh = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+            "XF86AudioMute".spawn-sh =
+              "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
 
             "XF86AudioMicMute".spawn-sh =
               "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+            "XF86AudioPlay".spawn-sh = "${pkgs.playerctl}/bin/playerctl play-pause";
+            "XF86AudioPause".spawn-sh = "${pkgs.playerctl}/bin/playerctl play-pause";
+            "XF86AudioNext".spawn-sh = "${pkgs.playerctl}/bin/playerctl next";
+            "XF86AudioPrev".spawn-sh = "${pkgs.playerctl}/bin/playerctl previous";
+            "XF86AudioStop".spawn-sh = "${pkgs.playerctl}/bin/playerctl stop";
 
             "Mod+U".focus-workspace-down = { };
             "Mod+I".focus-workspace-up = { };

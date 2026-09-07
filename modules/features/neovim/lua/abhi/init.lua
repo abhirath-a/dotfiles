@@ -18,6 +18,8 @@ vim.lsp.enable({
   "elixirls",
   "tinymist",
   "svelte",
-  "tailwindcss"
+  "tailwindcss",
+  "ruff",
+  "jdtls"
 })
 
