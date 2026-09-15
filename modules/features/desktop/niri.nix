@@ -44,7 +44,6 @@
 
           layout = {
             gaps = 4;
-
             border.off = { };
 
             focus-ring = {
@@ -160,8 +159,7 @@
             "XF86AudioLowerVolume".spawn-sh =
               "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-";
 
-            "XF86AudioMute".spawn-sh =
-              "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+            "XF86AudioMute".spawn-sh = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
 
             "XF86AudioMicMute".spawn-sh =
               "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";

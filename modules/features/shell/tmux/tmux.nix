@@ -24,7 +24,7 @@
         };
         session = (
           pkgs.writeShellScriptBin "ts" ''
-            set -euo pipefail
+            set -uo pipefail
 
             FD="${pkgs.fd}/bin/fd"
             FZF="${pkgs.fzf}/bin/fzf"
@@ -32,10 +32,8 @@
             REALPATH="${pkgs.coreutils}/bin/realpath"
             SHA256SUM="${pkgs.coreutils}/bin/sha256sum"
             TMUX="${pkgs.tmux}/bin/tmux"
-            BASENAME="${pkgs.coreutils}/bin/basename"
-            TR="${pkgs.coreutils}/bin/tr"
 
-            DIRS=(
+            RAW_DIRS=(
               "$HOME"
               "$HOME/documents"
               "$HOME/documents/projects"
@@ -43,6 +41,12 @@
               "$HOME/src"
               "$HOME/.config/nixos"
             )
+
+            # Filter only existing directories to prevent fd/set -e failures
+            DIRS=()
+            for d in "''${RAW_DIRS[@]}"; do
+              [[ -d "$d" ]] && DIRS+=("$d")
+            done
 
             IGNORES=(
               ".git"
@@ -58,6 +62,9 @@
             EDITOR_CMD="''${EDITOR:-nvim}"
 
             list_directories() {
+              if ((''${#DIRS[@]} == 0)); then
+                return 0
+              fi
               "$FD" \
                 --type d \
                 --hidden \
@@ -69,22 +76,18 @@
 
             session_name() {
               local path="$1"
-
               printf '%s' "$path" |
                 "$SHA256SUM" |
                 cut -c1-12
             }
 
-            # Expand ~/foo when supplied as an argument.
             expand_path() {
               local path="$1"
-
               if [[ "$path" == "~/"* ]]; then
                 path="$HOME/''${path#~/}"
               elif [[ "$path" == "~" ]]; then
                 path="$HOME"
               fi
-
               "$REALPATH" "$path"
             }
 
@@ -96,7 +99,7 @@
             else
               mapfile -t entries < <(list_directories)
 
-              ((''${#entries[@]} > 0)) || exit 0
+              ((''${#entries[@]} > 0)) || { echo "No directories found to search." >&2; exit 0; }
 
               selected="$(
                 printf '%s\n' "''${entries[@]}" |

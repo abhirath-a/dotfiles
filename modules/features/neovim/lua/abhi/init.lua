@@ -2,7 +2,7 @@ require("abhi.opts")
 require("abhi.keymaps")
 require("abhi.autocmds")
 
-require("kanso").setup()
+require("kanso").setup({ transparent = true })
 
 vim.cmd.colorscheme("kanso-zen")
 
@@ -20,6 +20,7 @@ vim.lsp.enable({
   "svelte",
   "tailwindcss",
   "ruff",
-  "jdtls"
+  "jdtls",
+  "clangd"
 })
 

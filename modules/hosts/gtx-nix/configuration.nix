@@ -100,9 +100,10 @@
         wtype
         waypipe
         gimp
-        stirling-pdf-desktop
+        input-remapper
+        eclipses.eclipse-java
       ];
-
+      services.input-remapper.enable = true;
       programs.helium = {
         enable = true;
 

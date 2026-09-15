@@ -52,7 +52,8 @@
               selection-background = "22262d";
 
               urls = "72a7bc";
-              alpha = 0.9;
+              alpha = 0.8;
+              blur = "yes";
             };
           };
         };

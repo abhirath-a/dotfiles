@@ -49,6 +49,7 @@
           svelte-language-server
           tailwindcss-language-server
           jdt-language-server
+          clang-tools 
         ];
 
         specs = with pkgs.vimPlugins; {

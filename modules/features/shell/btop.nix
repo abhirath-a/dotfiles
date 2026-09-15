@@ -14,7 +14,7 @@
 
       settings = {
         color_theme = "Default";
-        theme_background = true;
+        theme_background = false;
         truecolor = true;
         force_tty = false;
 
