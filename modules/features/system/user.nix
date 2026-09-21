@@ -9,6 +9,7 @@
         "wheel"
         "docker"
         "uinput"
+        "video"
       ];
       shell = pkgs.bashInteractive;
       openssh.authorizedKeys.keys = [

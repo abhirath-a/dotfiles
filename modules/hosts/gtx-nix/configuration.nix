@@ -102,6 +102,7 @@
         gimp
         input-remapper
         eclipses.eclipse-java
+        speedcrunch
       ];
       services.input-remapper.enable = true;
       programs.helium = {

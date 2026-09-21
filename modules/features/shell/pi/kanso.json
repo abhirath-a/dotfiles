@@ -1,0 +1,113 @@
+{
+  "$schema": "https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
+  "name": "kanso-zen",
+
+  "vars": {
+    "zen0": "#090E13",
+    "zen1": "#14171D",
+    "zen2": "#1C1E25",
+    "zen3": "#22262D",
+    "zen4": "#393B44",
+
+    "fujiWhite": "#C5C9C7",
+    "oldWhite": "#C8C093",
+    "fujiGray": "#A4A7A4",
+
+    "red": "#C4746E",
+    "brightRed": "#E46876",
+
+    "green": "#8A9A7B",
+    "brightGreen": "#87A987",
+
+    "yellow": "#C4B28A",
+    "brightYellow": "#E6C384",
+
+    "blue": "#8BA4B0",
+    "brightBlue": "#7FB4CA",
+
+    "violet": "#A292A3",
+    "brightViolet": "#938AA9",
+
+    "aqua": "#8EA4A2",
+    "brightAqua": "#7AA89F",
+
+    "orange": "#B6927B",
+    "peach": "#B98D7B"
+  },
+
+  "colors": {
+    "accent": "brightBlue",
+
+    "border": "zen4",
+    "borderAccent": "blue",
+    "borderMuted": "zen3",
+
+    "success": "brightGreen",
+    "error": "brightRed",
+    "warning": "brightYellow",
+
+    "muted": "fujiGray",
+    "dim": "zen4",
+    "text": "fujiWhite",
+    "thinkingText": "fujiGray",
+
+    "selectedBg": "zen4",
+
+    "userMessageBg": "zen2",
+    "userMessageText": "fujiWhite",
+
+    "customMessageBg": "zen2",
+    "customMessageText": "fujiWhite",
+    "customMessageLabel": "brightBlue",
+
+    "toolPendingBg": "zen1",
+    "toolSuccessBg": "zen1",
+    "toolErrorBg": "zen1",
+
+    "toolTitle": "blue",
+    "toolOutput": "fujiGray",
+
+    "mdHeading": "red",
+    "mdLink": "violet",
+    "mdLinkUrl": "blue",
+
+    "mdCode": "green",
+    "mdCodeBlock": "fujiWhite",
+    "mdCodeBlockBorder": "zen4",
+
+    "mdQuote": "violet",
+    "mdQuoteBorder": "violet",
+
+    "mdHr": "aqua",
+    "mdListBullet": "aqua",
+
+    "toolDiffAdded": "green",
+    "toolDiffRemoved": "red",
+    "toolDiffContext": "fujiGray",
+
+    "syntaxComment": "fujiGray",
+    "syntaxKeyword": "violet",
+    "syntaxFunction": "blue",
+    "syntaxVariable": "fujiWhite",
+    "syntaxString": "green",
+    "syntaxNumber": "peach",
+    "syntaxType": "aqua",
+    "syntaxOperator": "yellow",
+    "syntaxPunctuation": "fujiGray",
+
+    "thinkingOff": "zen4",
+    "thinkingMinimal": "blue",
+    "thinkingLow": "green",
+    "thinkingMedium": "yellow",
+    "thinkingHigh": "orange",
+    "thinkingXhigh": "red",
+
+    "bashMode": "orange"
+  },
+
+  "export": {
+    "pageBg": "#090E13",
+    "cardBg": "#14171D",
+    "infoBg": "#22262D"
+  }
+}

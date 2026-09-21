@@ -21,6 +21,7 @@
       self.nixosModules.sops
       self.nixosModules.wireguard
       self.nixosModules.spotify
+      self.nixosModules.pi
     ];
   };
 }

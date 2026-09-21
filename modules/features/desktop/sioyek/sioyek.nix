@@ -116,7 +116,7 @@
         pdfScript
       ];
       environment.sessionVariables = {
-        "QT_QPA_PLATFORM" = "xcb";
+        # "QT_QPA_PLATFORM" = "xcb";
       };
       hjem.users.abhi = {
         files.".config/sioyek/prefs_user.config".source = ./prefs_user.config;

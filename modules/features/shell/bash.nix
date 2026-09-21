@@ -24,9 +24,11 @@
     {
       programs.bash = {
         enable = true;
-
-        interactiveShellInit = ''
+        
+        promptInit = ''
           export PS1="\[\e[38;5;75m\]\w \[\e[38;5;189m\]\$ \[\e[0m\]"
+        '';
+        interactiveShellInit = ''
           eval "$(${pkgs.fzf}/bin/fzf --bash)"
         '';
       };

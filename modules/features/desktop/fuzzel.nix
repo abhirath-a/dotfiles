@@ -7,6 +7,7 @@
       inherit pkgs;
       settings = {
         main = {
+          icons-enabled = false;
           dpi-aware = false;
         };
         border.radius = 0;
@@ -17,9 +18,9 @@
           prompt = "#${self.theme.base05}ff";
           input = "#${self.theme.base05}ff";
           match = "#${self.theme.base0A}ff";
-          selection = "#${self.theme.base03}ff";
-          selection-text = "#${self.theme.base05}ff";
-          selection-match = "#${self.theme.base0A}ff";
+          selection = "#${self.theme.base07}ff";
+          selection-text = "#${self.theme.base00}ff";
+          selection-match = "#${self.theme.base0D}ff";
           counter = "#${self.theme.base06}ff";
           border = "#${self.theme.base0D}ff";
         };
