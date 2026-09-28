@@ -103,7 +103,9 @@
                 pkgs.gnused
                 pkgs.gawk
 
+                pkgs.nix
                 pkgs.bash
+                pkgs.uv
               ])
 
               # Useful so git/git know your identity and preferences.
