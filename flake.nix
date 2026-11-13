@@ -26,12 +26,17 @@
     spicetify-nix.url = "github:Gerg-L/spicetify-nix";
 
     pi.url = "github:lukasl-dev/pi.nix";
+<<<<<<< Updated upstream
     jail-nix.url = "sourcehut:~alexdavid/jail.nix";
 
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+=======
+    
+    keyframe.url = "github:abhirath-a/keyframe";
+>>>>>>> Stashed changes
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);

@@ -13,7 +13,6 @@ vim.lsp.enable({
   "ty",
   "tsgo",
   "rust_analyzer",
-  "astro",
   "biome",
   "elixirls",
   "tinymist",
@@ -21,6 +20,20 @@ vim.lsp.enable({
   "tailwindcss",
   "ruff",
   "jdtls",
-  "clangd"
+  "clangd",
+  "oxfmt"
 })
 
+vim.lsp.config("astro", {
+  init_options = {
+    typescript = {
+      tsdk = require('nix-info').settings.tssdk,
+    },
+  },
+  on_attach = function(client, bufnr)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
+})
+
+vim.lsp.enable("astro")

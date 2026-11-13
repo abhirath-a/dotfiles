@@ -25,7 +25,51 @@
 
       virtualisation.podman.enable = true;
       services.blueman.enable = true;
+      # Keep the pairing UI, but do not autostart its unused tray/applet.
+      hjem.users.abhi.files.".config/autostart/blueman.desktop".text = ''
+        [Desktop Entry]
+        Type=Application
+        Name=Blueman Applet
+        Hidden=true
+      '';
+
       programs.nix-ld.enable = true;
+      programs.nix-ld.libraries = with pkgs; [
+        libxkbcommon
+        nspr
+        nss
+        atk
+        at-spi2-atk
+        cairo
+        cups
+        dbus
+        expat
+        fontconfig
+        freetype
+        gdk-pixbuf
+        glib
+        gtk3
+        libX11
+        libXcomposite
+        libXdamage
+        libXext
+        libXfixes
+        libXrandr
+        libXrender
+        libXtst
+        libdrm
+        libgbm
+        libnotify
+        libsecret
+        libuuid
+        libxcb
+        libxshmfence
+        pango
+        systemd
+        alsa-lib
+        mesa
+      ];
+
       services.xserver.videoDrivers = [ "nvidia" ];
 
       hardware.graphics.enable = true;
@@ -59,11 +103,13 @@
           wakeOnLan.enable = true;
         };
         firewall = {
-          enable = true;
+          enable = false;
           trustedInterfaces = [ "wg0" ];
           allowedUDPPorts = [
             9
+            8081
           ];
+          allowedTCPPorts = [ 8081 ];
         };
         networkmanager.enable = true;
       };
@@ -103,7 +149,15 @@
         input-remapper
         eclipses.eclipse-java
         speedcrunch
+        libreoffice
+        codex
+        chromium
+        inputs.keyframe.packages.${pkgs.system}.default
       ];
+      programs.localsend = {
+        enable = true;
+        openFirewall = true;
+      };
       services.input-remapper.enable = true;
       programs.helium = {
         enable = true;

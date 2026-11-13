@@ -30,6 +30,7 @@
 
         settings = {
           config_directory = ./.;
+          tssdk = ''${nightlyPkgs.typescript_5}/lib/node_modules/typescript/lib'';
         };
         runtimePkgs = with nightlyPkgs; [
           fzf
@@ -49,7 +50,8 @@
           svelte-language-server
           tailwindcss-language-server
           jdt-language-server
-          clang-tools 
+          clang-tools
+          oxfmt
         ];
 
         specs = with pkgs.vimPlugins; {

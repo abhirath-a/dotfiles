@@ -84,13 +84,19 @@ function analyzeSegment(seg: Token[]): Risk | null {
 		reasons.push("find -delete (bulk deletion)");
 	}
 
-	// git operations (prompt on ANY git command)
+	// Only skip prompts for an explicitly limited set of read-only git invocations.
 	if (cmd === "git") {
 		const sub = rest[0];
 		const subArgs = rest.slice(1);
-
-		// Always prompt for git commands (user requested). Keep severity medium unless an explicit high-risk pattern is detected.
-		reasons.push(sub ? `git ${sub} (git command)` : "git (git command)");
+		const readOnlyOptions: Record<string, string[]> = {
+			status: ["--short", "-s", "--branch", "-b", "--porcelain", "--porcelain=v1", "--porcelain=v2"],
+			diff: ["--stat", "--name-only", "--name-status", "--check"],
+			log: ["--oneline", "--stat", "--max-count=1", "-1"],
+			show: ["--stat", "--oneline"],
+		};
+		if (!sub || !Object.hasOwn(readOnlyOptions, sub) || !subArgs.every((arg) => readOnlyOptions[sub].includes(arg))) {
+			reasons.push(sub ? `git ${sub} (git command)` : "git (git command)");
+		}
 
 		if (sub === "rm") {
 			severity = "high";
@@ -284,15 +290,15 @@ function analyzeBashCommand(command: string): Risk | null {
 		reasons.push("shell output redirection (can overwrite files)");
 		severity = severity === "high" ? "high" : "medium";
 	}
-	if (ops.includes("<")) {
-		reasons.push("shell input redirection (questionable)");
-	}
-	if (ops.includes("|")) {
-		reasons.push("pipe operator (chained commands)");
+	// Check each command in a pipeline, not just the first one. A pipe alone
+	// does not modify files, but piping into a shell still warrants a prompt.
+	if (ops.some((op) => op === "|" || op === "|&") && tokensToStrings(tokens).some((arg) => ["sh", "bash", "zsh", "fish", "dash"].includes(arg))) {
+		reasons.push("pipe to a shell (possible code execution)");
+		severity = "high";
 	}
 
-	// Segment analysis (split on &&, ||, ;)
-	const segments = splitOnOps(tokens, ["&&", "||", ";"]);
+	// Segment analysis (split on control operators and pipes)
+	const segments = splitOnOps(tokens, ["&&", "||", ";", "|", "|&"]);
 	for (const seg of segments) {
 		const segRisk = analyzeSegment(seg);
 		if (!segRisk) continue;

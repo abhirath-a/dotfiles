@@ -46,6 +46,7 @@
 
       environment.sessionVariables = {
         "EDITOR" = "nvim";
+        "VISUAL" = "nvim";
         "MANPAGER" = "nvim +Man!";
         "HISTIGNORE" = "exit:cd:ls:bg:fg:history:f:fd:vim";
       };
