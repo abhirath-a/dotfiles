@@ -9,6 +9,7 @@
       spotify
       sioyek
       yazi
+      sops
     ];
   };
 }
