@@ -3,6 +3,8 @@ keys:
   - &gtx_nix age1hptu7pzhfpxvtkk5duyeyan3fptuqucs52p4ylvdtfc3y757e9ssp0v5qd
   - &abhi_latitude_wsl age1cqspv76ph7mk0yvtyac48x389aety06va9zzdg540aw3098d2ysq38ejdc
   - &latitude_wsl age13udsvryvnzv4ll687l5v3lgdpee3342er0llwcsly6pdxcjgv36syy3drt
+  - &abhi-macbook-me: age1se1qvlzuf5qz8v0msw7v5umaka5p4ay9265aaza56p7pu37u8t7zzqqjp9gufg
+  - &abhi-macbook-machine: age1m2jae66pns2autful2nr9dxqu8mjf0wmmdsfcmk4ezwmtuxe7qsstu38xn
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -11,3 +13,5 @@ creation_rules:
         - *gtx_nix
         - *abhi_latitude_wsl
         - *latitude_wsl
+        - *abhi-macbook-me
+        - *abhi-macbook-machine

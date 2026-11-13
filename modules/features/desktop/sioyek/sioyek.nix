@@ -1,139 +1,122 @@
-{ config, ... }:
-{
-  flake.nixosModules.sioyek =
+
+{ ... }:
+let
+  sioyekModule =
     { pkgs, ... }:
     let
-      pdfScript = (
-        pkgs.writeShellScriptBin "pdf" ''
+      isDarwin = pkgs.stdenv.isDarwin;
+
+      configDir =
+        if isDarwin then
+          "Library/Application Support/sioyek"
+        else
+          ".config/sioyek";
+
+      pdfScript = pkgs.writeShellApplication {
+        name = "pdf";
+
+        runtimeInputs = with pkgs; [
+          fd
+          fzf
+          coreutils
+          poppler-utils
+          sioyek
+        ];
+
+        text = ''
           set -euo pipefail
 
-          FD="${pkgs.fd}/bin/fd"
-          FZF="${pkgs.fzf}/bin/fzf"
-          SORT="${pkgs.coreutils}/bin/sort"
-          SIOYEK="${pkgs.sioyek}/bin/sioyek"
-          TMUX="${pkgs.tmux}/bin/tmux"
-          REALPATH="${pkgs.coreutils}/bin/realpath"
-          BASENAME="${pkgs.coreutils}/bin/basename"
-
           DIRS=(
+            "$HOME/Documents"
             "$HOME/documents"
           )
 
           list_documents() {
-            "$FD" \
-              --absolute-path \
-              --type f \
-              --max-depth 8 \
-              \( -e pdf -o -e epub -o -e djvu \) \
-              "''${DIRS[@]}" 2>/dev/null |
-              "$SORT" -u |
+            for dir in "''${DIRS[@]}"; do
+              [[ -d "$dir" ]] || continue
+
+              fd \
+                --absolute-path \
+                --type f \
+                --max-depth 8 \
+                -e pdf \
+                -e epub \
+                -e djvu \
+                "" "$dir"
+            done |
+              sort -u |
               while IFS= read -r path; do
-                name="$("$BASENAME" "$path")"
-                dir="$(dirname "$path" | sed "s#$HOME#~#")"
+                name="$(basename "$path")"
+                dir="$(dirname "$path")"
+                dir="~''${dir#"$HOME"}"
 
                 printf '%s\t%s\t%s\n' \
-                  "$name" \
-                  "$dir" \
-                  "$path"
+                  "$name" "$dir" "$path"
               done
           }
 
-          open_sioyek_tmux() {
+          open_document() {
             local file="$1"
-            local session="pdf"
 
-            if ! "$TMUX" has-session -t "$session" 2>/dev/null; then
-              "$TMUX" new-session \
-                -d \
-                -s "$session" \
-                -n viewer \
-                -c "$HOME"
+            if [[ -n "''${TMUX:-}" ]]; then
+              nohup sioyek "$file" \
+                >/dev/null 2>&1 </dev/null &
+
+              disown
+
+              tmux display-message \
+                "Opened ''${file##*/}"
+            else
+              exec sioyek "$file"
             fi
-
-            "$TMUX" list-windows -t "$session" |
-              grep -q "viewer" || \
-              "$TMUX" new-window \
-                -d \
-                -t "$session" \
-                -n viewer \
-                -c "$HOME"
-
-            "$TMUX" send-keys \
-              -t "$session:viewer" \
-              "$SIOYEK $(printf '%q' "$file")" \
-              C-m
-
-            "$TMUX" display-message \
-              "Opened ''${file##*/}"
           }
-
-          cleanup() {
-            unset FZF_DEFAULT_OPTS
-          }
-
-          trap cleanup EXIT INT TERM
 
           if [[ $# -gt 0 ]]; then
-            selected="$("$REALPATH" "$1")"
+            selected="$(realpath "$1")"
           else
             selected="$(
-              mapfile -t entries < <(list_documents)
-
-              ((''${#entries[@]} > 0)) || exit 0
-
-              printf '%s\n' "''${entries[@]}" |
-                "$FZF" \
+              list_documents |
+                fzf \
                   --delimiter=$'\t' \
                   --with-nth=1,2 \
                   --layout=reverse \
                   --height=50% \
                   --border \
-                  --preview '
-                    file=$(echo {} | cut -f3)
-                    if command -v pdfinfo >/dev/null 2>&1; then
-                      pdfinfo "$file" 2>/dev/null | head -15
-                    fi
-                  ' |
-                cut -f3
-            )"
+                  --preview \
+                    'pdfinfo {3} 2>/dev/null | head -15'
+            )" || exit 0
 
             [[ -n "$selected" ]] || exit 0
+
+            selected="$(printf '%s\n' "$selected" | cut -f3)"
           fi
 
-          selected="$("$REALPATH" "$selected")"
+          [[ -f "$selected" ]] || {
+            echo "File not found: $selected" >&2
+            exit 1
+          }
 
-          if [[ -n "''${TMUX:-}" ]]; then
-            open_sioyek_tmux "$selected"
-          else
-            exec "$SIOYEK" "$selected"
-          fi
-        ''
-      );
+          open_document "$selected"
+        '';
+      };
     in
     {
       environment.systemPackages = [
         pkgs.sioyek
         pdfScript
       ];
-      environment.sessionVariables = {
-        # "QT_QPA_PLATFORM" = "xcb";
+
+      hjem.users.abhi.files = {
+        "${configDir}/prefs_user.config".source =
+          ./prefs_user.config;
+
+        "${configDir}/keys_user.config".source =
+          ./keys_user.config;
       };
-      hjem.users.abhi = {
-        files.".config/sioyek/prefs_user.config".source = ./prefs_user.config;
-        files.".config/sioyek/keys_user.config".source = ./keys_user.config;
-      };
-      # environment.etc."sioyek/prefs_user.config".source =
-      #   ./prefs_user.config;
-      #
-      # environment.etc."sioyek/keys_user.config".source =
-      #   ./keys_user.config;
-      #
-      # system.activationScripts.sioyekConfig.text = ''
-      #   mkdir -p /home/abhi/.config/sioyek
-      #   ln -sfn /etc/sioyek/prefs_user.config \
-      #     /home/abhi/.config/sioyek/prefs_user.config
-      #   ln -sfn /etc/sioyek/keys_user.config \
-      #     /home/abhi/.config/sioyek/keys_user.config
-      # '';
     };
+in
+{
+  flake.nixosModules.sioyek = sioyekModule;
+  flake.darwinModules.sioyek = sioyekModule;
 }
+

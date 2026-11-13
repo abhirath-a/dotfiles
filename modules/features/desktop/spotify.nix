@@ -19,7 +19,6 @@
             adblockify
             hidePodcasts
             shuffle
-            betterGenres
             ;
         };
         experimentalFeatures = true;
@@ -47,6 +46,28 @@
           equalizer = "${self.theme.base0B}";
           misc = "${self.theme.base02}";
         };
+      };
+    };
+
+  flake.darwinModules.spotify =
+    { pkgs, lib, ... }:
+    let
+      spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    in
+    {
+      imports = [ inputs.spicetify-nix.nixosModules.spicetify ];
+      programs.spicetify = {
+        enable = true;
+        enabledCustomApps = builtins.attrValues { inherit (spicePkgs.apps) lyricsPlus ncsVisualizer; };
+        enabledExtensions = builtins.attrValues {
+          inherit (spicePkgs.extensions)
+            adblockify
+            hidePodcasts
+            shuffle
+            ;
+        };
+        experimentalFeatures = true;
+        alwaysEnableDevTools = true;
       };
     };
 }

@@ -14,4 +14,18 @@
       };
     };
   };
+
+  flake.darwinModules.sops = { pkgs, ... }: {
+    imports = [ inputs.sops-nix.darwinModules.sops ];
+
+    environment.systemPackages = with pkgs; [
+      sops
+      age
+      age-plugin-se
+    ];
+
+    sops = {
+      defaultSopsFile = ../../../secrets/secrets.yaml;
+    };
+  };
 }

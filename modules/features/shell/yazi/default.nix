@@ -1,6 +1,6 @@
 { self, inputs, ... }:
 {
-  flake.nixosModules.tmux =
+  flake.nixosModules.yazi =
     { pkgs, ... }:
     {
       programs.yazi = {
@@ -13,6 +13,15 @@
       ];
     };
 
+  flake.darwinModules.yazi =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [
+        pkgs.duckdb
+        pkgs.imagemagick
+        self.packages.${pkgs.stdenv.hostPlatform.system}.yazi
+      ];
+    };
   perSystem =
     { pkgs, ... }:
     {

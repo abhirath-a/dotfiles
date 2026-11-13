@@ -42,7 +42,7 @@
           marksman
           astro-language-server
           elixir-ls
-          typescript-go
+          typescript
           ty
           ruff
           tinymist

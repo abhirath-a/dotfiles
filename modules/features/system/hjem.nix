@@ -8,4 +8,12 @@
       user = "abhi";
     };
   };
+  flake.darwinModules.hjem = {
+    imports = [ inputs.hjem.darwinModules.default ];
+    hjem.users.abhi = {
+      enable = true;
+      directory = "/Users/abhi";
+      user = "abhi";
+    };
+  };
 }
